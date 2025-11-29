@@ -1,0 +1,28 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: sql
+  namespace: notes-app
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /man
+
+# ---
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: sqlvolpvc
+#   namespace: notes-app
+# spec:
+#   accessModes:
+#   - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 1Gi
+#   storageClassName: local-storage

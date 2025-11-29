@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9-slim
 
 WORKDIR /app/backend
 
@@ -14,6 +14,8 @@ RUN pip install mysqlclient
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/backend
+
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn notesapp.wsgi --bind 0.0.0.0:8000"]
 
 EXPOSE 8000
 #RUN python manage.py migrate

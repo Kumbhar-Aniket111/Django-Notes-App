@@ -1,0 +1,57 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql
+  namespace: notes-app
+spec:
+  selector:
+    app: mysql
+  ports:
+  - protocol: TCP
+    port: 3307
+    targetPort: 3306
+
+---
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: sql
+  namespace: notes-app
+spec:
+  replicas: 1
+  serviceName: mysql
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      name: mysql
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: sqlconfigmap
+              key: MYSQL_DATABASE
+        volumeMounts:
+        - name: data1
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: data1
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+

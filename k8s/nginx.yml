@@ -1,0 +1,40 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+  namespace: notes-app
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nginx
+  namespace: notes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: notes-app
+      labels:
+        app: nginx
+    spec:
+      initContainers:
+      - name: wait-for-django
+        image: busybox
+        command: ['sh', '-c', 'until nc -v django-app 8000; do echo waiting for db; sleep 2; done;']
+      containers:
+      - name: nginx
+        image: aniket1112000/django-notes-app-main-nginx
+        ports:
+        - containerPort: 80

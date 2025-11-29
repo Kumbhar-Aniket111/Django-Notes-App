@@ -4,7 +4,7 @@ services:
     build:
       context: ./nginx
     ports:
-      - "80:80"
+      - "100:80"
     networks:
       - notes-app
     depends_on:

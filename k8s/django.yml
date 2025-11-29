@@ -1,0 +1,54 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: django-app
+  namespace: notes-app
+spec:
+  selector:
+    app: django
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: django
+  namespace: notes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      name: django
+      labels:
+        app: django
+    spec:
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox
+        command: ['sh', '-c', 'until nc -z mysql 3307; do echo waiting for db; sleep 2; done;']
+      containers:
+      - name: django
+        image: aniket1112000/django-notes-app-main-django-app:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DB_PASSWORD
+          value: root
+        - name: DB_USER
+          value: root
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: sqlconfigmap
+              key: MYSQL_DATABASE
+        - name: DB_PORT
+          value: "3307"
+        - name: DB_HOST
+          value: mysql

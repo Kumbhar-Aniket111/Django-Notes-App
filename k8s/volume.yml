@@ -1,8 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: sql
-  namespace: notes-app
+  name: sqlonkar
 spec:
   accessModes:
   - ReadWriteOnce
@@ -11,7 +10,7 @@ spec:
   storageClassName: local-storage
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /man
+    path: /onkar
 
 # ---
 # kind: PersistentVolumeClaim

@@ -1,2 +1,2 @@
 1. Use echo -n "<password>" | base64 to create password using secret
-2. Clear data from the hostdata if you want to new password to set
+2. Clear data from the hostdata if you want to set new password to db
